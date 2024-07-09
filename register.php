@@ -8,17 +8,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $phone_number = $_POST['phone_number'];
     $password = $_POST['password'];
 
-    $stmt = $conn->prepare("INSERT INTO users (name, email, phone_number, password_hash) VALUES (?, ?, ?, ?)");
-    $stmt->bind_param("ssss", $name, $email, $phone_number, $password);
-    if ($stmt->execute()) {
+    $password_hash = password_hash($password, PASSWORD_DEFAULT);
+
+    $sql = "INSERT INTO users (name, email, phone_number, password_hash) 
+            VALUES ('$name', '$email', '$phone_number', '$password_hash')";
+    if ($conn->query($sql) === TRUE) {
         $_SESSION['user_id'] = $conn->insert_id;
         $_SESSION['is_admin'] = false; // By default, a new user is not an admin
         header("Location: index.php");
         exit;
     } else {
-        $error_message = "Registration failed: " . $stmt->error;
+        $error_message = "Registration failed: " . $conn->error;
     }
-    $stmt->close();
 }
 ?>
 

@@ -13,10 +13,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $location = $_POST['location'];
     $rating = $_POST['rating'];
 
-    $stmt = $conn->prepare("INSERT INTO stores (name, category, location, rating) VALUES (?, ?, ?, ?)");
-    $stmt->bind_param("sssd", $name, $category, $location, $rating);
-    $stmt->execute();
-    $stmt->close();
+    $sql = "INSERT INTO stores (name, category, location, rating) 
+            VALUES ('$name', '$category', '$location', $rating)";
+    $conn->query($sql);
 }
 
 $stores = get_stores();
@@ -56,7 +55,7 @@ $stores = get_stores();
         </section>
         
         <section>
-        <a href="add_product.php">Add Product</a>
+            <a href="add_product.php">Add Product</a>
             <h2>Manage Stores</h2>
             <ul>
                 <?php foreach ($stores as $store): ?>
